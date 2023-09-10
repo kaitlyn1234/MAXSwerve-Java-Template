@@ -53,6 +53,8 @@ public class Robot extends TimedRobot {
 
     wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
     lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+    lift_setpoint = getLiftAngle();
+    wrist_setpoint = getWristAngle();
   }
 
   public double wrapAngle(double ang) {
@@ -84,8 +86,6 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("lift encoder", getLiftAngle());
     SmartDashboard.putNumber("wrist encoder", getWristAngle());
-    lift_setpoint = getLiftAngle();
-    wrist_setpoint = getWristAngle();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -132,15 +132,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    double stick_x = stick.getX();
-    double stick_y = stick.getY();
-    if (Math.abs(stick_x) > 0.1) {
-      lift_setpoint = lift_setpoint + stick_x * 0.01;
+    if (stick.getRawButton(9)) {
+      wrist_setpoint = 0;
+      lift_setpoint = 0;
+    }
+    else {
+      double stick_x = stick.getX();
+      double stick_y = stick.getY();
+      if (Math.abs(stick_x) > 0.1) {
+        lift_setpoint = lift_setpoint + stick_x * 0.01;
+      }
+  
+      if (Math.abs(stick_y) > 0.1) {
+        wrist_setpoint = wrist_setpoint + stick_y * 0.01;
+      }
     }
 
-    if (Math.abs(stick_y) > 0.1) {
-      wrist_setpoint = wrist_setpoint + stick_y * 0.01;
-    }
 
     //LIFT TOGETHER
     double lift_angle = getLiftAngle();
@@ -158,8 +165,8 @@ public class Robot extends TimedRobot {
     
     if (stick.getRawButton(11)) {
       //in
-      rightintake.set(0.05);
-      leftintake.set(0.05);
+      rightintake.set(0.3);
+      leftintake.set(0.3);
     }
     else if (stick.getRawButton(12)) {
       //out
@@ -170,6 +177,7 @@ public class Robot extends TimedRobot {
       rightintake.set(0);
       leftintake.set(0);
     }
+
     
 
 /* 
