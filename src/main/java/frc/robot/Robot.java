@@ -45,6 +45,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+  public double wrapAngle(double ang) {
+    return Math.atan2(Math.sin(ang), Math.cos(ang));
+  }
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -60,8 +63,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     
-    SmartDashboard.putNumber("lift encoder", -rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
-    SmartDashboard.putNumber("wrist encoder", -wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
+    SmartDashboard.putNumber("lift encoder", wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2));
+    SmartDashboard.putNumber("wrist encoder", wrapAngle(-wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
