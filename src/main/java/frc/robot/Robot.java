@@ -127,12 +127,12 @@ public class Robot extends TimedRobot {
     //WRIST
 
     if (stick.getRawButton(5)) {
-      //
+      //up
       wrist.set(-0.1);
       
     }
     else if (stick.getRawButton(6)) {
-      //
+      //down
       wrist.set(0.1);
    
     }
@@ -144,22 +144,22 @@ public class Robot extends TimedRobot {
 
     //INTAKE
 
-    /* 
-    if (stick.getRawButton(5)) {
-      //?
-      rightintake.set(-0.05);
+    
+    if (stick.getRawButton(11)) {
+      //in
+      rightintake.set(0.05);
       leftintake.set(0.05);
     }
-    else if (stick.getRawButton(6)) {
-      //?
-      rightintake.set(0.05);
+    else if (stick.getRawButton(12)) {
+      //out
+      rightintake.set(-0.05);
       leftintake.set(-0.05);
     }
     else {
       rightintake.set(0);
       leftintake.set(0);
     }
-    */
+    
 
 /* 
     //TEST INDIVIDUAL LIFT MOTORS
