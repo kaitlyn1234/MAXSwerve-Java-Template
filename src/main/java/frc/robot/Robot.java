@@ -31,11 +31,11 @@ public class Robot extends TimedRobot {
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
   Joystick stick = new Joystick(2);
   
-  PIDController lift_pos_pid = new PIDController(0.5, 0.0, 0.0);
-  PIDController wrist_pos_pid = new PIDController(0.5, 0.0, 0.0);
+  PIDController lift_pos_pid = new PIDController(0.02, 0.0, 0.0);
+  PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
   double wrist_setpoint = 0;
-
+  double lift_setpoint = 0;
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -132,26 +132,16 @@ public class Robot extends TimedRobot {
 
     //LIFT TOGETHER
 
-    if (stick.getRawButton(3)) {
-      //up
-      rightliftmotor.set(-0.05);
-      leftliftmotor.set(0.05);
-    }
-    else if (stick.getRawButton(4)) {
-      //down
-      rightliftmotor.set(0.05);
-      leftliftmotor.set(-0.05);
-    }
-    else {
-      rightliftmotor.set(0);
-      leftliftmotor.set(0);
-    }
+    lift_setpoint = stick.getX();
+    double lift_cmd = lift_pos_pid.calculate(getLiftAngle(), lift_setpoint);
+    rightliftmotor.set(-lift_cmd);
+    leftliftmotor.set(lift_cmd);
 
     //WRIST
 
     wrist_setpoint = stick.getY();
     double wrist_cmd = wrist_pos_pid.calculate(getWristAngle(), wrist_setpoint);
-    wrist.set(wrist_cmd);
+    wrist.set(-wrist_cmd);
 
     //INTAKE
 
