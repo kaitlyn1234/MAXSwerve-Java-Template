@@ -7,6 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Joystick;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,6 +20,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  CANSparkMax rightliftmotor = new CANSparkMax(9, MotorType.kBrushless);;
+  CANSparkMax leftliftmotor = new CANSparkMax(12, MotorType.kBrushless);;
+  CANSparkMax wrist = new CANSparkMax(11, MotorType.kBrushless);;
+  CANSparkMax leftintake= new CANSparkMax(10, MotorType.kBrushless);;
+  CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
+ Joystick stick = new Joystick(2);
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -88,7 +100,96 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    //LIFT TOGETHER
+
+    if (stick.getRawButton(3)) {
+      //up
+      rightliftmotor.set(-0.05);
+      leftliftmotor.set(0.05);
+    }
+    else if (stick.getRawButton(4)) {
+      //down
+      rightliftmotor.set(0.05);
+      leftliftmotor.set(-0.05);
+    }
+    else {
+      rightliftmotor.set(0);
+      leftliftmotor.set(0);
+    }
+
+    //WRIST
+
+    if (stick.getRawButton(5)) {
+      //
+      wrist.set(-0.1);
+      
+    }
+    else if (stick.getRawButton(6)) {
+      //
+      wrist.set(0.1);
+   
+    }
+    else{
+      wrist.set(0);
+  
+    }
+    
+
+    //INTAKE
+
+    /* 
+    if (stick.getRawButton(5)) {
+      //?
+      rightintake.set(-0.05);
+      leftintake.set(0.05);
+    }
+    else if (stick.getRawButton(6)) {
+      //?
+      rightintake.set(0.05);
+      leftintake.set(-0.05);
+    }
+    else {
+      rightintake.set(0);
+      leftintake.set(0);
+    }
+    */
+
+/* 
+    //TEST INDIVIDUAL LIFT MOTORS
+
+     if (stick.getRawButton(3)) {
+      //up
+      rightliftmotor.set(-0.05);
+      
+    }
+    else if (stick.getRawButton(4)) {
+      //down
+      rightliftmotor.set(0.05);
+   
+    }
+    else{
+      rightliftmotor.set(0);
+  
+    }
+
+    if (stick.getRawButton(5)) {
+      //down
+      leftliftmotor.set(-0.05);
+      
+    }
+    else if (stick.getRawButton(6)) {
+      //up
+      leftliftmotor.set(0.05);
+   
+    }
+    else{
+      leftliftmotor.set(0);
+  
+    }
+*/
+  }
 
   @Override
   public void testInit() {

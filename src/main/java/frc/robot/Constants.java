@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -51,7 +52,7 @@ public final class Constants {
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
-    // SPARK MAX CAN IDs
+    // SPARK MAX DRIVE TRAIN CAN IDs
     public static final int kFrontLeftDrivingCanId = 6;
     public static final int kRearLeftDrivingCanId = 8;
     public static final int kFrontRightDrivingCanId = 4;
@@ -61,11 +62,16 @@ public final class Constants {
     public static final int kRearLeftTurningCanId = 7;
     public static final int kFrontRightTurningCanId = 3;
     public static final int kRearRightTurningCanId = 2;
-
-    public static final int leftliftmotor = 9;
-    public static final int rightliftmotor = 10;
-
     public static final boolean kGyroReversed = false;
+
+    //MECHANISM CAN IDs
+    public static final int rightliftmotor = 9;
+    public static final int leftliftmotor = 12;
+    public static final int wrist = 11;
+    public static final int leftintake = 10;
+    public static final int rightintake = 14;
+
+    public final Joystick m_stick = new Joystick(3);
   }
 
   public static final class ModuleConstants {
