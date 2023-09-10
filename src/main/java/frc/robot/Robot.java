@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -58,9 +59,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("lift encoder", rightliftmotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("wrist encoder", wrist.getEncoder().getPosition());
-
+    SmartDashboard.putNumber("lift encoder", rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    SmartDashboard.putNumber("wrist encoder", wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
