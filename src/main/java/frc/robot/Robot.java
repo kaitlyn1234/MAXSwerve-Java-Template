@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
   Joystick stick = new Joystick(2);
   
-  PIDController lift_pos_pid = new PIDController(0.02, 0.0, 0.0);
+  PIDController lift_pos_pid = new PIDController(0.2, 0.0, 0.0);
   PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
   double wrist_setpoint = 0;
@@ -132,8 +132,10 @@ public class Robot extends TimedRobot {
 
     //LIFT TOGETHER
 
+    double lift_angle = getLiftAngle();
     lift_setpoint = stick.getX();
-    double lift_cmd = lift_pos_pid.calculate(getLiftAngle(), lift_setpoint);
+    double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
+    lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
 
