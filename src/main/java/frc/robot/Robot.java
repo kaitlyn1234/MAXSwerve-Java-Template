@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -20,13 +22,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  * project.
  */
 public class Robot extends TimedRobot {
-  CANSparkMax rightliftmotor = new CANSparkMax(9, MotorType.kBrushless);;
+  CANSparkMax rightliftmotor = new CANSparkMax(9, MotorType.kBrushless);; // Encoder 0 = level, down is +, up is - (incrementing clockwise when looking at right side)
   CANSparkMax leftliftmotor = new CANSparkMax(12, MotorType.kBrushless);;
-  CANSparkMax wrist = new CANSparkMax(11, MotorType.kBrushless);;
+  CANSparkMax wrist = new CANSparkMax(11, MotorType.kBrushless);; // Encoder, 0 = straight, down is +, up is - (incrementing clockwise when looking at right side)
   CANSparkMax leftintake= new CANSparkMax(10, MotorType.kBrushless);;
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
- Joystick stick = new Joystick(2);
-
+  Joystick stick = new Joystick(2);
+  
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -56,6 +58,9 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("lift encoder", rightliftmotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("wrist encoder", wrist.getEncoder().getPosition());
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
