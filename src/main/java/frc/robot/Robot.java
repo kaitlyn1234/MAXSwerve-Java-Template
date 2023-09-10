@@ -84,6 +84,8 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("lift encoder", getLiftAngle());
     SmartDashboard.putNumber("wrist encoder", getWristAngle());
+    lift_setpoint = getLiftAngle();
+    wrist_setpoint = getWristAngle();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -130,18 +132,24 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    //LIFT TOGETHER
+    double stick_x = stick.getX();
+    double stick_y = stick.getY();
+    if (Math.abs(stick_x) > 0.1) {
+      lift_setpoint = lift_setpoint + stick_x * 0.01;
+    }
 
+    if (Math.abs(stick_y) > 0.1) {
+      wrist_setpoint = wrist_setpoint + stick_y * 0.01;
+    }
+
+    //LIFT TOGETHER
     double lift_angle = getLiftAngle();
-    lift_setpoint = stick.getX();
     double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
     lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
 
     //WRIST
-
-    wrist_setpoint = stick.getY();
     double wrist_cmd = wrist_pos_pid.calculate(getWristAngle(), wrist_setpoint);
     wrist.set(-wrist_cmd);
 
