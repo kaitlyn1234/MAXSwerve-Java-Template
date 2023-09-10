@@ -59,8 +59,9 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("lift encoder", rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
-    SmartDashboard.putNumber("wrist encoder", wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    
+    SmartDashboard.putNumber("lift encoder", -rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
+    SmartDashboard.putNumber("wrist encoder", -wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
