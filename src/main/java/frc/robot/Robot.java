@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import edu.wpi.first.math.controller.PIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,9 +31,15 @@ public class Robot extends TimedRobot {
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
   Joystick stick = new Joystick(2);
   
+  PIDController lift_pos_pid = new PIDController(0.5, 0.0, 0.0);
+  PIDController wrist_pos_pid = new PIDController(0.5, 0.0, 0.0);
+
+  double wrist_setpoint = 0;
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,6 +50,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+    lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public double wrapAngle(double ang) {
@@ -139,21 +149,9 @@ public class Robot extends TimedRobot {
 
     //WRIST
 
-    if (stick.getRawButton(5)) {
-      //up
-      wrist.set(-0.1);
-      
-    }
-    else if (stick.getRawButton(6)) {
-      //down
-      wrist.set(0.1);
-   
-    }
-    else{
-      wrist.set(0);
-  
-    }
-    
+    wrist_setpoint = stick.getY();
+    double wrist_cmd = wrist_pos_pid.calculate(getWristAngle(), wrist_setpoint);
+    wrist.set(wrist_cmd);
 
     //INTAKE
 
