@@ -41,18 +41,15 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
-    lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+    // wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+    // lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+
     lift_setpoint = getLiftAngle();
     wrist_setpoint = getWristAngle();
   }
@@ -67,6 +64,14 @@ public class Robot extends TimedRobot {
 
   public double getLiftAngle() {
     return wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
+  }
+
+  public double getLiftFeedback() {
+    return getLiftAngle() + Math.PI / 2.0;
+  }
+
+  public double getWristFeedback() {
+    return getWristAngle() + Math.PI / 2.0;
   }
 
   /**
@@ -86,6 +91,9 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("lift encoder", getLiftAngle());
     SmartDashboard.putNumber("wrist encoder", getWristAngle());
+
+    SmartDashboard.putNumber("lift feedback", getLiftFeedback());
+    SmartDashboard.putNumber("wrist feedback", getWristFeedback());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -133,8 +141,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (stick.getRawButton(9)) {
-      wrist_setpoint = 0;
-      lift_setpoint = 0;
+      wrist_setpoint = Math.PI / 2;
+      lift_setpoint = Math.PI / 2;
     }
     else {
       double stick_x = stick.getX();
@@ -150,15 +158,17 @@ public class Robot extends TimedRobot {
 
 
     //LIFT TOGETHER
-    double lift_angle = getLiftAngle();
+    double lift_angle = getLiftFeedback();
     double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
     lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
 
+
     //WRIST
-    double wrist_cmd = wrist_pos_pid.calculate(getWristAngle(), wrist_setpoint);
+    double wrist_cmd = wrist_pos_pid.calculate(getWristFeedback(), wrist_setpoint);
     wrist.set(-wrist_cmd);
+
 
     //INTAKE
 
