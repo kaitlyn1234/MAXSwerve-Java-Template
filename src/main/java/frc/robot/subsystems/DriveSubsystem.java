@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -42,6 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+
+  AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -174,9 +178,10 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
+    
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(ahrs.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
