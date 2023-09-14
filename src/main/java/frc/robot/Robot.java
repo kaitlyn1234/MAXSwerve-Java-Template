@@ -34,10 +34,10 @@ public class Robot extends TimedRobot {
   PIDController lift_pos_pid = new PIDController(0.2, 0.0, 0.0);
   PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
-  double lift_setpoint_lower_limit = 0;
+  double lift_setpoint_lower_limit = 0.3;
   double lift_setpoint_upper_limit = 2 * Math.PI;
-  double wrist_setpoint_lower_limit = 0;
-  double wrist_setpoint_upper_limit = 2 * Math.PI;
+  double wrist_setpoint_lower_limit = 0.45;
+  double wrist_setpoint_upper_limit = 5.45;
 
   double wrist_joystick_speed = 0.01;
   double lift_joystick_speed = 0.01;
@@ -67,11 +67,11 @@ public class Robot extends TimedRobot {
   }
 
   public double getWristAngle() {
-      return wrapAngle(-wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2 + Math.PI / 2.0);
+      return wrapAngle(-wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
   }
 
   public double getLiftAngle() {
-    return wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2 + Math.PI);
+    return wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2 - Math.PI / 2.0);
   }
 
   public double getLiftFeedback() {
