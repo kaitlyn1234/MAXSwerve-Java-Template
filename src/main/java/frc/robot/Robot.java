@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (stick.getRawButton(9)) {
+  /*   if (stick.getRawButton(9)) {
       wrist_setpoint = 0;
       lift_setpoint = 0;
     }
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
         wrist_setpoint = wrist_setpoint + stick_y * 0.01;
       }
     }
-
+*/
 
     //LIFT TOGETHER
     double lift_angle = getLiftAngle();
