@@ -58,8 +58,8 @@ public class Robot extends TimedRobot {
     // wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
     // lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
 
-    lift_setpoint = getLiftAngle();
-    wrist_setpoint = getWristAngle();
+    lift_setpoint = getLiftFeedback();
+    wrist_setpoint = getWristFeedback();
   }
 
   public double wrapAngle(double ang) {
