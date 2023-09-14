@@ -34,6 +34,14 @@ public class Robot extends TimedRobot {
   PIDController lift_pos_pid = new PIDController(0.2, 0.0, 0.0);
   PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
+  double lift_setpoint_lower_limit = 0;
+  double lift_setpoint_upper_limit = 2 * Math.PI;
+  double wrist_setpoint_lower_limit = 0;
+  double wrist_setpoint_upper_limit = 2 * Math.PI;
+
+  double wrist_joystick_speed = 0.01;
+  double lift_joystick_speed = 0.01;
+
   double wrist_setpoint = 0;
   double lift_setpoint = 0;
   private Command m_autonomousCommand;
@@ -67,11 +75,52 @@ public class Robot extends TimedRobot {
   }
 
   public double getLiftFeedback() {
+    // Offset so horizontal angle is 90 deg
     return getLiftAngle() + Math.PI / 2.0;
   }
 
   public double getWristFeedback() {
-    return getWristAngle() + Math.PI / 2.0;
+    // Offset so the centered angle is pi
+    return getWristAngle() + Math.PI;
+  }
+
+  public void clampSetpoints() {
+    if (lift_setpoint < lift_setpoint_lower_limit) { lift_setpoint = lift_setpoint_lower_limit; }
+    if (lift_setpoint > lift_setpoint_upper_limit) { lift_setpoint = lift_setpoint_upper_limit; }
+
+    if (wrist_setpoint < wrist_setpoint_lower_limit) { lift_setpoint = wrist_setpoint_lower_limit; }
+    if (wrist_setpoint > wrist_setpoint_upper_limit) { lift_setpoint = wrist_setpoint_upper_limit; }
+  }
+
+  public void controlWrist() {
+    double wrist_cmd = wrist_pos_pid.calculate(getWristFeedback(), wrist_setpoint);
+    wrist.set(-wrist_cmd);
+  }
+
+  public void controlLift() {
+    double lift_angle = getLiftFeedback();
+    double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
+    lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
+    rightliftmotor.set(-lift_cmd);
+    leftliftmotor.set(lift_cmd);
+  }
+
+  public void arbitrateSetpoints() {
+    if (stick.getRawButton(9)) {
+      wrist_setpoint = Math.PI; // Straight
+      lift_setpoint = Math.PI / 2; // Parallel to floor
+    }
+    else {
+      double stick_x = stick.getX();
+      double stick_y = stick.getY();
+      if (Math.abs(stick_x) > 0.1) {
+        lift_setpoint = lift_setpoint + stick_x * lift_joystick_speed;
+      }
+  
+      if (Math.abs(stick_y) > 0.1) {
+        wrist_setpoint = wrist_setpoint + stick_y * wrist_joystick_speed;
+      }
+    }
   }
 
   /**
@@ -140,39 +189,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (stick.getRawButton(9)) {
-      wrist_setpoint = Math.PI / 2;
-      lift_setpoint = Math.PI / 2;
-    }
-    else {
-      double stick_x = stick.getX();
-      double stick_y = stick.getY();
-      if (Math.abs(stick_x) > 0.1) {
-        lift_setpoint = lift_setpoint + stick_x * 0.01;
-      }
-  
-      if (Math.abs(stick_y) > 0.1) {
-        wrist_setpoint = wrist_setpoint + stick_y * 0.01;
-      }
-    }
-
-
-    //LIFT TOGETHER
-    double lift_angle = getLiftFeedback();
-    double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
-    lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
-    rightliftmotor.set(-lift_cmd);
-    leftliftmotor.set(lift_cmd);
-
-
-    //WRIST
-    double wrist_cmd = wrist_pos_pid.calculate(getWristFeedback(), wrist_setpoint);
-    wrist.set(-wrist_cmd);
-
+    arbitrateSetpoints();
+    clampSetpoints();
+    controlWrist();
+    controlLift();
 
     //INTAKE
-
-    
     if (stick.getRawButton(11)) {
       //in
       rightintake.set(0.3);
@@ -187,42 +209,6 @@ public class Robot extends TimedRobot {
       rightintake.set(0);
       leftintake.set(0);
     }
-
-    
-
-/* 
-    //TEST INDIVIDUAL LIFT MOTORS
-
-     if (stick.getRawButton(3)) {
-      //up
-      rightliftmotor.set(-0.05);
-      
-    }
-    else if (stick.getRawButton(4)) {
-      //down
-      rightliftmotor.set(0.05);
-   
-    }
-    else{
-      rightliftmotor.set(0);
-  
-    }
-
-    if (stick.getRawButton(5)) {
-      //down
-      leftliftmotor.set(-0.05);
-      
-    }
-    else if (stick.getRawButton(6)) {
-      //up
-      leftliftmotor.set(0.05);
-   
-    }
-    else{
-      leftliftmotor.set(0);
-  
-    }
-*/
   }
 
   @Override
