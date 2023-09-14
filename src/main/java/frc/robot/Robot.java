@@ -67,16 +67,16 @@ public class Robot extends TimedRobot {
   }
 
   public double getWristAngle() {
-      return wrapAngle(-wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
+      return wrapAngle(-wrist.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2 + Math.PI / 2.0);
   }
 
   public double getLiftAngle() {
-    return wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2);
+    return wrapAngle(-rightliftmotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * Math.PI * 2 + Math.PI);
   }
 
   public double getLiftFeedback() {
     // Offset so horizontal angle is 90 deg
-    return getLiftAngle() + Math.PI / 2.0;
+    return getLiftAngle() + Math.PI;
   }
 
   public double getWristFeedback() {
@@ -97,10 +97,14 @@ public class Robot extends TimedRobot {
     wrist.set(-wrist_cmd);
   }
 
+  public double getLiftFF() {
+    return 0.04 * Math.cos(getLiftAngle());
+  }
+
   public void controlLift() {
     double lift_fb = getLiftFeedback();
     double lift_cmd = lift_pos_pid.calculate(lift_fb, lift_setpoint);
-    lift_cmd = lift_cmd + 0.04 * Math.cos(getLiftAngle());
+    lift_cmd = lift_cmd + getLiftFF();
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
   }
