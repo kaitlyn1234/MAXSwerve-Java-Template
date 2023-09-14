@@ -98,9 +98,9 @@ public class Robot extends TimedRobot {
   }
 
   public void controlLift() {
-    double lift_angle = getLiftFeedback();
-    double lift_cmd = lift_pos_pid.calculate(lift_angle, lift_setpoint);
-    lift_cmd = lift_cmd + 0.04 * Math.cos(lift_angle);
+    double lift_fb = getLiftFeedback();
+    double lift_cmd = lift_pos_pid.calculate(lift_fb, lift_setpoint);
+    lift_cmd = lift_cmd + 0.04 * Math.cos(getLiftAngle());
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
   }
