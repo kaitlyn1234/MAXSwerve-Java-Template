@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
   double lift_setpoint_lower_limit = 0.3;
-  double lift_setpoint_upper_limit = 2 * Math.PI;
+  double lift_setpoint_upper_limit = 5.6;
   double wrist_setpoint_lower_limit = 0.45;
   double wrist_setpoint_upper_limit = 5.45;
 
@@ -88,8 +88,8 @@ public class Robot extends TimedRobot {
     if (lift_setpoint < lift_setpoint_lower_limit) { lift_setpoint = lift_setpoint_lower_limit; }
     if (lift_setpoint > lift_setpoint_upper_limit) { lift_setpoint = lift_setpoint_upper_limit; }
 
-    if (wrist_setpoint < wrist_setpoint_lower_limit) { lift_setpoint = wrist_setpoint_lower_limit; }
-    if (wrist_setpoint > wrist_setpoint_upper_limit) { lift_setpoint = wrist_setpoint_upper_limit; }
+    if (wrist_setpoint < wrist_setpoint_lower_limit) { wrist_setpoint = wrist_setpoint_lower_limit; }
+    if (wrist_setpoint > wrist_setpoint_upper_limit) { wrist_setpoint = wrist_setpoint_upper_limit; }
   }
 
   public void controlWrist() {
@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
   }
 
   public double getLiftFF() {
-    return 0.04 * Math.cos(getLiftAngle());
+    return 0.04 * Math.cos(getLiftFeedback());
   }
 
   public void controlLift() {
@@ -206,8 +206,8 @@ public class Robot extends TimedRobot {
     }
     else if (stick.getRawButton(12)) {
       //out
-      rightintake.set(-0.05);
-      leftintake.set(-0.05);
+      rightintake.set(-0.3);
+      leftintake.set(-0.3);
     }
     else {
       rightintake.set(0);
