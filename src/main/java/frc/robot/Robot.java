@@ -34,15 +34,15 @@ public class Robot extends TimedRobot {
   SlewRateLimiter lift_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
   SlewRateLimiter wrist_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
 
-  PIDController lift_pos_pid = new PIDController(0.2, 0.0, 0.0);
-  PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
+  PIDController lift_pos_pid = new PIDController(0.25, 0.0, 0.0);
+  PIDController wrist_pos_pid = new PIDController(0.1, 0.0, 0.0);
 
   double lift_setpoint_lower_limit = 0.3;
   double lift_setpoint_upper_limit = 5.6;
   double wrist_setpoint_lower_limit = 0.45;
   double wrist_setpoint_upper_limit = 5.45;
 
-  double wrist_joystick_speed = 0.01;
+  double wrist_joystick_speed = 0.015;
   double lift_joystick_speed = 0.01;
 
   double wrist_setpoint = 0;
@@ -124,8 +124,8 @@ public class Robot extends TimedRobot {
      
     else if (stick.getRawButton(1)){
       //cone scoring
-      wrist_setpoint = 1.91;
-      lift_setpoint = 2.141;
+      wrist_setpoint = 1.75;
+      lift_setpoint = 2.28;
     }
 
     else if (stick.getRawButton(2)){
@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
 
     else if (stick.getRawButton(3)){
       //cone human player
-      wrist_setpoint = 1.481;
+      wrist_setpoint = 1.205;
       lift_setpoint = 5.23;
     }
 
@@ -236,8 +236,8 @@ public class Robot extends TimedRobot {
     //INTAKE
     if (stick.getRawButton(5)) {
       //in
-      rightintake.set(0.3);
-      leftintake.set(0.3);
+      rightintake.set(0.45);
+      leftintake.set(0.45);
     }
     else if (stick.getRawButton(6)) {
       //out
