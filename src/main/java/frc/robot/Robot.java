@@ -15,7 +15,8 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,6 +32,11 @@ public class Robot extends TimedRobot {
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
   Joystick stick = new Joystick(2);
   
+private static final String kDefaultAuto = "Default";
+private static final String kCustomAuto = "My Auto";
+private String m_autoSelected;
+private final SendableChooser<String> m_chooser = new SendableChooser <>();
+
   SlewRateLimiter lift_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
   SlewRateLimiter wrist_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
 
@@ -48,7 +54,9 @@ public class Robot extends TimedRobot {
   double wrist_setpoint = 0;
   double lift_setpoint = 0;
 
-//h
+
+  Timer autonomy_timer = new Timer();
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -56,6 +64,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+
+    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -192,9 +204,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    /*
+    autonomy_timer.reset();
+    autonomy_timer.start();
+  
+    /*cj
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
      * = new MyAutoCommand(); break; case "Default Auto": default:
@@ -211,7 +224,21 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+
+    if (autonomy_timer.hasElapsed(0.001)) {
+      wrist_setpoint = 1.75;
+      lift_setpoint = 2.28;
+    }
+    else if (autonomy_timer.hasElapsed(7)) {
+      rightintake.set(-0.3);
+      leftintake.set(-0.3);
+      }
+      else {
+        rightintake.set(0);
+        leftintake.set(0);
+      }
+  }
 
   @Override
   public void teleopInit() {

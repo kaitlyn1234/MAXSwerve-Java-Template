@@ -72,16 +72,16 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
-  }
+  }}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  //public Command getAutonomousCommand() {}} {}
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
+   /*  TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
@@ -120,3 +120,4 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 }
+*/
