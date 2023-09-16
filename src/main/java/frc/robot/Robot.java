@@ -121,9 +121,34 @@ public class Robot extends TimedRobot {
       wrist_setpoint = Math.PI; // Straight
       lift_setpoint = Math.PI / 2; // Parallel to floor
     }
+     
+    else if (stick.getRawButton(1)){
+      //cone scoring
+      wrist_setpoint = 1.91;
+      lift_setpoint = 2.141;
+    }
+
+    else if (stick.getRawButton(2)){
+      //cube scoring
+      wrist_setpoint = 3.564;
+      lift_setpoint = 1.828;
+    }
+
+    else if (stick.getRawButton(3)){
+      //cone human player
+      wrist_setpoint = 1.481;
+      lift_setpoint = 5.23;
+    }
+
+    else if (stick.getRawButton(4)){
+      //cube human player
+      wrist_setpoint = 3.019;
+      lift_setpoint = 4.961;
+    }
+   
     else {
-      double stick_x = stick.getX();
-      double stick_y = stick.getY();
+      double stick_x = stick.getRawAxis(1);
+      double stick_y = stick.getRawAxis(5);
       if (Math.abs(stick_x) > 0.1) {
         lift_setpoint = lift_setpoint + stick_x * lift_joystick_speed;
       }
@@ -209,12 +234,12 @@ public class Robot extends TimedRobot {
     controlLift();
 
     //INTAKE
-    if (stick.getRawButton(11)) {
+    if (stick.getRawButton(5)) {
       //in
       rightintake.set(0.3);
       leftintake.set(0.3);
     }
-    else if (stick.getRawButton(12)) {
+    else if (stick.getRawButton(6)) {
       //out
       rightintake.set(-0.3);
       leftintake.set(-0.3);
