@@ -13,7 +13,7 @@ import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
-
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -31,6 +31,9 @@ public class Robot extends TimedRobot {
   CANSparkMax rightintake= new CANSparkMax(14, MotorType.kBrushless);;
   Joystick stick = new Joystick(2);
   
+  SlewRateLimiter lift_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
+  SlewRateLimiter wrist_rate_limiter = new SlewRateLimiter(Math.PI / 2.0); // 90 deg per second
+
   PIDController lift_pos_pid = new PIDController(0.2, 0.0, 0.0);
   PIDController wrist_pos_pid = new PIDController(0.2, 0.0, 0.0);
 
@@ -44,6 +47,7 @@ public class Robot extends TimedRobot {
 
   double wrist_setpoint = 0;
   double lift_setpoint = 0;
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -55,9 +59,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    // wrist_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
-    // lift_pos_pid.enableContinuousInput(-Math.PI, Math.PI);
+    homeSetpoints();
+  }
 
+  public void homeSetpoints() {
     lift_setpoint = getLiftFeedback();
     wrist_setpoint = getWristFeedback();
   }
@@ -93,7 +98,8 @@ public class Robot extends TimedRobot {
   }
 
   public void controlWrist() {
-    double wrist_cmd = wrist_pos_pid.calculate(getWristFeedback(), wrist_setpoint);
+    double rate_limited_setpoint = wrist_rate_limiter.calculate(wrist_setpoint);
+    double wrist_cmd = wrist_pos_pid.calculate(getWristFeedback(), rate_limited_setpoint);
     wrist.set(-wrist_cmd);
   }
 
@@ -102,8 +108,9 @@ public class Robot extends TimedRobot {
   }
 
   public void controlLift() {
+    double rate_limited_setpoint = lift_rate_limiter.calculate(lift_setpoint);
     double lift_fb = getLiftFeedback();
-    double lift_cmd = lift_pos_pid.calculate(lift_fb, lift_setpoint);
+    double lift_cmd = lift_pos_pid.calculate(lift_fb, rate_limited_setpoint);
     lift_cmd = lift_cmd + getLiftFF();
     rightliftmotor.set(-lift_cmd);
     leftliftmotor.set(lift_cmd);
@@ -168,6 +175,8 @@ public class Robot extends TimedRobot {
      * autonomousCommand = new ExampleCommand(); break; }
      */
 
+    homeSetpoints();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -187,6 +196,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    homeSetpoints();
   }
 
   /** This function is called periodically during operator control. */
