@@ -51,11 +51,11 @@ private final SendableChooser<String> m_chooser = new SendableChooser <>();
   double wrist_joystick_speed = 0.015;
   double lift_joystick_speed = 0.01;
 
-  double wrist_setpoint = 0;
-  double lift_setpoint = 0;
+  public double wrist_setpoint = 0;
+  public double lift_setpoint = 0;
 
 
-  Timer autonomy_timer = new Timer();
+  public Timer autonomy_timer = new Timer();
 
   private Command m_autonomousCommand;
 
@@ -226,18 +226,6 @@ private final SendableChooser<String> m_chooser = new SendableChooser <>();
   @Override
   public void autonomousPeriodic() {
 
-    if (autonomy_timer.hasElapsed(0.001)) {
-      wrist_setpoint = 1.75;
-      lift_setpoint = 2.28;
-    }
-    else if (autonomy_timer.hasElapsed(7)) {
-      rightintake.set(-0.3);
-      leftintake.set(-0.3);
-      }
-      else {
-        rightintake.set(0);
-        leftintake.set(0);
-      }
   }
 
   @Override
