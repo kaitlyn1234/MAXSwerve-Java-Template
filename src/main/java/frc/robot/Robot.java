@@ -141,6 +141,12 @@ private final SendableChooser<String> m_chooser = new SendableChooser <>();
       lift_setpoint = 2.28;
     }
 
+    else if (stick.getRawButton(8)){
+      //home
+      wrist_setpoint = 0.525;
+      lift_setpoint = 5.568;
+    }
+
     else if (stick.getRawButton(2)){
       //cube scoring
       wrist_setpoint = 3.564;
@@ -225,7 +231,21 @@ private final SendableChooser<String> m_chooser = new SendableChooser <>();
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    wrist_setpoint = 1.75;
+    lift_setpoint = 2.28;
 
+    if (autonomy_timer.hasElapsed(10)) {
+      rightintake.set(0.0);
+      leftintake.set(0.0);
+    }
+    else if (autonomy_timer.hasElapsed(5)) {
+      rightintake.set(-0.3);
+      leftintake.set(-0.3);
+    }
+    
+    clampSetpoints();
+    controlWrist();
+    controlLift();
   }
 
   @Override
