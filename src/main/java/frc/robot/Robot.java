@@ -212,14 +212,15 @@ private final SendableChooser<String> m_chooser = new SendableChooser <>();
   public void autonomousInit() {
     autonomy_timer.reset();
     autonomy_timer.start();
-  
-    /*cj
+
+    //test this for trajectory
+  /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
      * = new MyAutoCommand(); break; case "Default Auto": default:
      * autonomousCommand = new ExampleCommand(); break; }
      */
-
+    
     homeSetpoints();
 
     // schedule the autonomous command (example)
